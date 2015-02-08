@@ -10,7 +10,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 public final class Infections extends JavaPlugin implements Listener{
 	public static Infections plugin;
-	public static boolean day = true;
+	public static Boolean day = true;
 	public static List<String> VampireList;
 	@Override
 	public void onEnable() {
@@ -26,13 +26,15 @@ public final class Infections extends JavaPlugin implements Listener{
             	if(day()){
     				day = true;
     				Vampires.vampDay();
+    				Vampires.vampDarkCheck();
     			}
     			else{
     				day = false;
     				Vampires.vampNight();
+    				Vampires.vampDarkCheck();
     			}
             }
-        }, 0L, 200L);
+        }, 0L, 20L);
         VampireList=Infections.plugin.getConfig().getStringList("vampires");
         
 	}
@@ -41,6 +43,8 @@ public final class Infections extends JavaPlugin implements Listener{
 	public void onDisable() {
 		getLogger().info("Unloaded infections.");
 		plugin = null;
+		VampireList=null;
+		day=null;
 	}
 
     public static void registerEvents(org.bukkit.plugin.Plugin plugin, Listener... listeners) {

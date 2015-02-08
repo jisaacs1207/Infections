@@ -18,6 +18,8 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 public class Vampires implements Listener {
@@ -123,18 +125,20 @@ public class Vampires implements Listener {
                     				int y3=y-2;
                     				Location blockLoc2=new Location(Bukkit.getWorld(w),x,y2,z);
                     				Location blockLoc3=new Location(Bukkit.getWorld(w),x,y3,z);
+                    				Location blockLoc4=new Location(Bukkit.getWorld(w),x,y3,z);
                     				Block block2 =Infections.plugin.getServer().getWorld(w).getBlockAt(blockLoc2);
                     				Block block3 =Infections.plugin.getServer().getWorld(w).getBlockAt(blockLoc3);
+                    				Block block4 =Infections.plugin.getServer().getWorld(w).getBlockAt(blockLoc4);
                     				if(block2.getType().equals(Material.AIR)){
-                    					if(!block3.getType().equals(Material.AIR)){
-                    						if(!block3.getType().equals(Material.LAVA)){
-                    							p.playEffect(EntityEffect.WOLF_SMOKE);
-                                                p.playSound(p.getLocation(), Sound.ENDERDRAGON_WINGS, 10, 0);
+                						if(block3.getType().isSolid()){
+                							if(block4.getType().isSolid()){
+            									p.playEffect(EntityEffect.WOLF_SMOKE);
+                                                p.playSound(p.getLocation(), Sound.ENDERDRAGON_WINGS, 20, 0);
                             					p.teleport(blockLoc);
                             					found=true;
                             					p.sendMessage(ChatColor.GRAY+"You've seeped through the ground below you.");
-                    						}
-                    					}	
+                							}
+                						}	
                     				}
                     			}
                     			y--;
@@ -148,6 +152,24 @@ public class Vampires implements Listener {
         		}
         	}
         }
+    }
+    
+    public static void vampDarkCheck(){
+    	for (int i = 0; i < Infections.VampireList.size(); i++) {
+			String vampire = Infections.VampireList.get(i);
+			for(Player p : Bukkit.getOnlinePlayers()){
+				if(p.getName().equalsIgnoreCase(vampire)){
+					//p.sendMessage(""+p.getLocation().getBlock().getLightLevel());
+					if(p.getLocation().getBlock().getLightLevel()<8){
+						p.removePotionEffect(PotionEffectType.NIGHT_VISION);
+						p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION,600,1));
+					}
+					if(p.getLocation().getBlock().getLightLevel()>7){
+						p.removePotionEffect(PotionEffectType.NIGHT_VISION);
+					}
+				}
+			}
+    	}
     }
 	
 	public static void vampNight(){
