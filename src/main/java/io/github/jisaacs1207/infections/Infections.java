@@ -1,6 +1,7 @@
 package io.github.jisaacs1207.infections;
 
 import java.util.List;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -26,12 +27,12 @@ public final class Infections extends JavaPlugin implements Listener{
             	if(day()){
     				day = true;
     				Vampires.vampDay();
-    				Vampires.vampDarkCheck();
+    				Vampires.secondCheck();
     			}
     			else{
     				day = false;
     				Vampires.vampNight();
-    				Vampires.vampDarkCheck();
+    				Vampires.secondCheck();
     			}
             }
         }, 0L, 20L);
@@ -53,7 +54,20 @@ public final class Infections extends JavaPlugin implements Listener{
         }
     }
     
-    public boolean day() {
+    public static int randInt(int min, int max) {
+
+        // NOTE: Usually this should be a field rather than a method
+        // variable so that it is not re-seeded every call.
+        Random rand = new Random();
+
+        // nextInt is normally exclusive of the top value,
+        // so add 1 to make it inclusive
+        int randomNum = rand.nextInt((max - min) + 1) + min;
+
+        return randomNum;
+    }
+    
+    public static boolean day() {
 	    Server server = Infections.plugin.getServer();
 	    long time = server.getWorld("world").getTime();
 	 
