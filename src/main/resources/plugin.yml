@@ -1,0 +1,12 @@
+name: Infections
+main: io.github.jisaacs1207.infections.Infections
+version: 1.0
+author: jisaacs1207
+website: http://fivekingdoms.net
+softdepend: [Vault]
+description: >
+             Fight off or given yourself over to an infection!
+
+commands:
+   infect:
+      description: Infection information.
