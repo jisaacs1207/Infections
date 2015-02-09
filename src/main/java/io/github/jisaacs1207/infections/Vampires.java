@@ -42,8 +42,8 @@ public class Vampires implements Listener {
 	public void onSneak(PlayerToggleSneakEvent event) { 
 		Player player = event.getPlayer();
 		if(!Infections.day){
-			for (int i = 0; i < Infections.VampireList.size(); i++) {
-				String vampire = Infections.VampireList.get(i);	
+			for (int i = 0; i < Infections.UndeadList.size(); i++) {
+				String vampire = Infections.UndeadList.get(i);	
 				if(event.getPlayer().getName().equalsIgnoreCase(vampire)){
 					if(!Infections.day){
 						if(event.isSneaking()){
@@ -103,8 +103,8 @@ public class Vampires implements Listener {
 	@EventHandler
 	public void onJump(PlayerMoveEvent event) {
 		if(!Infections.day){
-			for (int i = 0; i < Infections.VampireList.size(); i++) {
-				String vampire = Infections.VampireList.get(i);
+			for (int i = 0; i < Infections.UndeadList.size(); i++) {
+				String vampire = Infections.UndeadList.get(i);
 				if(event.getPlayer().getName().equalsIgnoreCase(vampire)){
 					if(event.getPlayer().getFoodLevel()>10){
 						Block block, control;
@@ -207,8 +207,8 @@ public class Vampires implements Listener {
     	if(event.getCause() == DamageCause.FALL){
     		if(event.getEntity() instanceof Player){
     			Player p = (Player) event.getEntity();
-	        	for (int i = 0; i < Infections.VampireList.size(); i++) {
-	        		String vampire = Infections.VampireList.get(i);
+	        	for (int i = 0; i < Infections.UndeadList.size(); i++) {
+	        		String vampire = Infections.UndeadList.get(i);
 	        		if(p.getName().equalsIgnoreCase(vampire)){
 	        			if(Infections.day){
 	        				int pFood = p.getFoodLevel();
@@ -289,24 +289,29 @@ public class Vampires implements Listener {
         	if(p.getItemInHand().getType().equals(Material.POTION)){
         		if((p.getItemInHand().getDurability() == 8197)||(p.getItemInHand().getDurability() == 16341)||
         				(p.getItemInHand().getDurability() == 8197)||(p.getItemInHand().getDurability() == 16373)){
-        			int pExtraHealth=0;
-        			if(p.getItemInHand().getDurability() == 8197){
-        				pExtraHealth=4;
-        			}
-        			else{
-        				pExtraHealth=8;
-        			}
-        			int pHealth=p.getHealth();
-        			int pFood=p.getFoodLevel();
-        			int pNewHealth=pHealth+pExtraHealth;
-        			int pNewFood=pFood+8;
-        			if(pNewHealth>20) pNewHealth=20;
-        			if(pNewFood>20) pNewFood=20;
-        			p.setHealth(pNewHealth);
-        			p.setFoodLevel(pNewFood);
-        			p.playSound(p.getLocation(), Sound.DRINK, 10, 0);
-        			p.getPlayer().getInventory().setItemInHand(new ItemStack(Material.GLASS_BOTTLE,1));
-                    event.setCancelled(true);
+            		for (int i = 0; i < Infections.VampireList.size(); i++) {
+                		String vampire = Infections.VampireList.get(i);
+                		if(p.getName().equalsIgnoreCase(vampire)){
+                			int pExtraHealth=0;
+                			if(p.getItemInHand().getDurability() == 8197){
+                				pExtraHealth=4;
+                			}
+                			else{
+                				pExtraHealth=8;
+                			}
+                			int pHealth=p.getHealth();
+                			int pFood=p.getFoodLevel();
+                			int pNewHealth=pHealth+pExtraHealth;
+                			int pNewFood=pFood+8;
+                			if(pNewHealth>20) pNewHealth=20;
+                			if(pNewFood>20) pNewFood=20;
+                			p.setHealth(pNewHealth);
+                			p.setFoodLevel(pNewFood);
+                			p.playSound(p.getLocation(), Sound.DRINK, 10, 0);
+                			p.getPlayer().getInventory().setItemInHand(new ItemStack(Material.GLASS_BOTTLE,1));
+                            event.setCancelled(true);
+                		}
+            		}	
                 }
         	}
         }
@@ -318,8 +323,8 @@ public class Vampires implements Listener {
     	Entity entity = event.getEntity();
     	if(target instanceof Player){
     		if((entity instanceof Zombie)||(entity instanceof Skeleton)||(entity instanceof PigZombie)){
-    			for (int i = 0; i < Infections.VampireList.size(); i++) {
-            		String vampire = Infections.VampireList.get(i);
+    			for (int i = 0; i < Infections.UndeadList.size(); i++) {
+            		String vampire = Infections.UndeadList.get(i);
             		Player p = (Player) event.getTarget();
             		if(p.getName().equalsIgnoreCase(vampire)){
             			event.setCancelled(true);
@@ -336,8 +341,8 @@ public class Vampires implements Listener {
     	Entity killer = event.getEntity().getKiller();
     	if(killer instanceof Player){
     		Player p = (Player) killer;
-    		for (int i = 0; i < Infections.VampireList.size(); i++) {
-    			String vampire = Infections.VampireList.get(i);
+    		for (int i = 0; i < Infections.UndeadList.size(); i++) {
+    			String vampire = Infections.UndeadList.get(i);
 				if(p.getName().equalsIgnoreCase(vampire)){
 					Location diedAt = died.getLocation();
 					if(died instanceof Pig){
@@ -363,18 +368,51 @@ public class Vampires implements Listener {
     	Entity damager = event.getDamager();
     	Entity victim = event.getEntity();
     	if(victim instanceof Player){
+    		Player p = (Player) victim;
     		if((damager instanceof Zombie)||(damager instanceof Skeleton)||(damager instanceof PigZombie)){
-    			event.setCancelled(true);
+    			for (int i = 0; i < Infections.UndeadList.size(); i++) {
+        			String vampire = Infections.UndeadList.get(i);
+    				if(p.getName().equalsIgnoreCase(vampire)){
+    					event.setCancelled(true);
+    				}
+    			}
     		}
     	}
     }
     
     // Runs once a second.
     public static void secondCheck(){
-    	for (int i = 0; i < Infections.VampireList.size(); i++) {
-			String vampire = Infections.VampireList.get(i);
+    	for (int i = 0; i < Infections.UndeadList.size(); i++) {
+			String vampire = Infections.UndeadList.get(i);
 			for(Player p : Bukkit.getOnlinePlayers()){
 				if(p.getName().equalsIgnoreCase(vampire)){
+					for (int t = 0; t < Infections.ThrallList.size(); t++) {
+						String thrall = Infections.ThrallList.get(t);
+						if(p.getName().equalsIgnoreCase(thrall)){
+							Player thrallie= (Player) p;
+							String vampFriend = Infections.plugin.getConfig().getString("thralls."+p.getName());
+							for(Player friend : Bukkit.getOnlinePlayers()){
+								if(friend.getName().equalsIgnoreCase(vampFriend)){
+									if(friend.getLocation().distance(p.getLocation())<25){
+										if(Infections.randInt(1, 20)==10){
+											int friendFood=friend.getFoodLevel()+1;
+											int friendHealth=friend.getHealth()+1;
+											int thrallFood=thrallie.getFoodLevel()+1;
+											int thrallHealth=thrallie.getHealth()+1;
+											if(friendFood>20) friendFood=20;
+											if(friendHealth>20) friendHealth=20;
+											if(thrallFood>20) thrallFood=20;
+											if(thrallHealth>20) thrallHealth=20;
+											friend.setFoodLevel(friendFood);
+											friend.setHealth(friendHealth);
+											thrallie.setFoodLevel(thrallFood);
+											thrallie.setHealth(thrallHealth);
+										}
+									}
+								}
+							}
+						}
+					}
 					if(p.getLocation().getBlock().getLightLevel()<8){
 						if(p.getFoodLevel()>10){
 							p.removePotionEffect(PotionEffectType.NIGHT_VISION);
@@ -391,10 +429,10 @@ public class Vampires implements Listener {
 			}
     	}
     }
-    // Runs once a second from the onEnable
+    // Runs once a second from the onEnable. sets walk speed
 	public static void vampNight(){
-		for (int i = 0; i < Infections.VampireList.size(); i++) {
-			String vampire = Infections.VampireList.get(i);
+		for (int i = 0; i < Infections.UndeadList.size(); i++) {
+			String vampire = Infections.UndeadList.get(i);
 			for(Player p : Bukkit.getOnlinePlayers()){
 				if(p.getName().equalsIgnoreCase(vampire)){
 					if(p.getFoodLevel()>10){
@@ -407,22 +445,31 @@ public class Vampires implements Listener {
 			}
 		}
 	}
-	// Runs once a second from the onEnable schedule during the day.
+	// Runs once a second from the onEnable schedule during the day. Sets walk speed and removes food if vamp.
 	public static void vampDay(){
-		for (int i = 0; i < Infections.VampireList.size(); i++) {
-			String vampire = Infections.VampireList.get(i);
+		boolean pThrall=false;
+		for (int i = 0; i < Infections.UndeadList.size(); i++) {
+			String vampire = Infections.UndeadList.get(i);
 			for(Player p : Bukkit.getOnlinePlayers()){
 				if(p.getName().equalsIgnoreCase(vampire)){
+					for (int t = 0; t < Infections.ThrallList.size(); t++) {
+						String thrall = Infections.ThrallList.get(t);
+						if(p.getName().equalsIgnoreCase(thrall)){
+							pThrall=true;
+						}
+					}
 					p.setWalkSpeed((float).2);
 					if(p.getLocation().getBlock().getLightLevel()==15){
 						if(Infections.randInt(1, 18)==10){
 							int pFoodLevel=p.getFoodLevel();
-							if(pFoodLevel>2){
-								int newFoodLevel = pFoodLevel-1;
-								p.setFoodLevel(newFoodLevel);
+							if(!pThrall){
+								if(pFoodLevel>2){
+									int newFoodLevel = pFoodLevel-1;
+									p.setFoodLevel(newFoodLevel);
+								}
 							}
 						}
-					}
+					}	
 				}
 			}
 		}

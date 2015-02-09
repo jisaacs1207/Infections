@@ -11,3 +11,7 @@ commands:
    infect:
       aliases: [infections, infection, inf]
       description: Infection information.
+   enthrall:
+      description: Enthralls a target.
+   dethrall:
+      description: Releases your thrall.

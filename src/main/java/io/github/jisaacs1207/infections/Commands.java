@@ -1,7 +1,6 @@
 package io.github.jisaacs1207.infections;
 
-import java.util.List;
-
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,6 +14,138 @@ class Commands implements CommandExecutor, Listener{
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmnd, String string, String[] args) {
 		String cmd = cmnd.getName();
+		if (cmd.equalsIgnoreCase("dethrall")){
+			Player player = (Player) sender;
+			Boolean isVamp = false;
+			Boolean hasThrall=false;
+			String thrall=null;
+			for (int i = 0; i < Infections.VampireList.size(); i++) {
+        		String vampire = Infections.VampireList.get(i);
+        		if(player.getName().equalsIgnoreCase(vampire)){
+        			isVamp = true;
+        		}
+			}
+			for(String thrallCheck:Infections.plugin.getConfig().getConfigurationSection("thralls").getKeys(false)){
+				String thraller = Infections.plugin.getConfig().getString("thralls."+thrallCheck);
+				if(thraller.equalsIgnoreCase(sender.getName())){
+					thrall = thrallCheck;
+					hasThrall=true;
+				}
+			}
+			if(isVamp){
+				if(hasThrall){
+					if (args.length == 0) {
+						sender.sendMessage("");
+						sender.sendMessage(ChatColor.GRAY + "You will release your thrall with this command.");
+						sender.sendMessage(ChatColor.GRAY + "To confirm, type '"+ChatColor.LIGHT_PURPLE+"dethrall confirm"+ChatColor.GRAY+"'");
+						sender.sendMessage("");
+					}
+					if (args.length == 1) {
+						sender.sendMessage(ChatColor.GRAY + "You've released your thrall from servitude.");
+						Infections.plugin.getConfig().set("thralls."+thrall, null);
+						Infections.plugin.saveConfig();
+						Infections.ThrallList.clear();
+						Infections.UndeadList.clear();
+						for(String thrallListing:Infections.plugin.getConfig().getConfigurationSection("thralls").getKeys(false)){
+				        	Infections.ThrallList.add(thrallListing);
+				        }
+				        Infections.UndeadList.addAll(Infections.ThrallList);
+				        Infections.UndeadList.addAll(Infections.VampireList);
+				        for(Player players : Infections.plugin.getServer().getOnlinePlayers()) {
+							if(thrall.equalsIgnoreCase(players.getName())){
+								players.sendMessage(ChatColor.GRAY+"You feel more alive, yet less close to "+sender.getName()+".");
+							}
+				        }
+					}
+				}
+				else{
+					sender.sendMessage(ChatColor.GRAY + "You don't currently have a thrall.");
+				}
+			}
+			else{
+				sender.sendMessage("Unknown command. Type "+ '"' +"help"+'"'+" for help.");
+			}
+		}
+		else if (cmd.equalsIgnoreCase("enthrall")){
+			Player player = (Player) sender;
+			Boolean isVamp = false;
+			for (int i = 0; i < Infections.VampireList.size(); i++) {
+        		String vampire = Infections.VampireList.get(i);
+        		if(player.getName().equalsIgnoreCase(vampire)){
+        			isVamp = true;
+        		}
+			}
+			if(isVamp==true){
+				if (args.length == 0) {
+					sender.sendMessage("");
+					sender.sendMessage(ChatColor.GRAY + "Be careful about this. You can only have one thrall at a time.");
+					sender.sendMessage(ChatColor.GRAY + "Usage is '"+ChatColor.LIGHT_PURPLE+"/enthrall <player>"+ChatColor.GRAY+"'.");
+					sender.sendMessage("");
+				}
+				else if (args.length == 1) {
+					sender.sendMessage("");
+					sender.sendMessage(ChatColor.GRAY +"Are you sure you want to make " + args[0] + " your thrall?");
+					sender.sendMessage(ChatColor.RED + "If they complain, staff will undo it. You will lose your chance.");
+					sender.sendMessage(ChatColor.GRAY + "To confirm, type '"+ChatColor.LIGHT_PURPLE+"enthrall "+args[0]+" confirm"+ChatColor.GRAY+"'");
+					sender.sendMessage("");
+				}
+				else if (args.length == 2) {
+					if(args[1].equalsIgnoreCase("confirm")){
+						Boolean isOnline = false;
+						Boolean alreadyUndead = false;
+						Boolean alreadyHaveThrall=false;
+						Player thrall = null;
+						for(Player players : Infections.plugin.getServer().getOnlinePlayers()) {
+							if(args[0].equalsIgnoreCase(players.getName())){
+								isOnline = true;
+								thrall = players.getPlayer();
+								for (int i = 0; i < Infections.UndeadList.size(); i++) {
+									String vampire = Infections.UndeadList.get(i);
+									if(players.getName().equalsIgnoreCase(vampire)){
+										alreadyUndead= true;
+										sender.sendMessage(ChatColor.GRAY+"That player is already among the unliving.");
+									}
+								}
+							}
+						}
+						if(isOnline){
+							for(String thrallCountCheck:Infections.plugin.getConfig().getConfigurationSection("thralls").getKeys(false)){
+								String thraller = Infections.plugin.getConfig().getString("thralls."+thrallCountCheck);
+								if(thraller.equalsIgnoreCase(sender.getName())){
+									sender.sendMessage(ChatColor.GRAY+"You've already got a thrall named "+thrallCountCheck+".");
+									sender.sendMessage(ChatColor.GRAY+"You must type '"+ChatColor.LIGHT_PURPLE+"/dethrall"+ChatColor.GRAY+
+											"' to continue!");
+									alreadyHaveThrall=true;
+								}
+							}
+							if((!alreadyUndead)&&(!alreadyHaveThrall)){
+								if(thrall.getLocation().distance(player.getLocation())<5){
+									sender.sendMessage("");
+									sender.sendMessage("You draw "+ChatColor.RED+"blood"+ChatColor.GRAY+" and force it on " +thrall + ".");
+									sender.sendMessage(ChatColor.RED+ args[0] + " "+ChatColor.GRAY+"is now enthralled to you.");
+									Infections.plugin.getConfig().set("thralls."+thrall.getName(), player.getName());
+									Infections.plugin.saveConfig();
+									Infections.ThrallList.add(thrall.getName());
+									Infections.UndeadList.add(thrall.getName());
+									sender.sendMessage("");	
+									thrall.sendMessage(ChatColor.GRAY+sender.getName()+" forces some of their "+ChatColor.RED+"blood"+ChatColor.GRAY+" in to your mouth.");
+									thrall.sendMessage(ChatColor.GRAY+"You feel changed. It is not an overly unpleasant feeling.");
+								}
+								else{
+									sender.sendMessage(ChatColor.GRAY+"You need to be closer to them to share your "+ChatColor.RED+"blood"+ChatColor.GRAY+".");
+								}
+							}
+						}
+						else{
+							sender.sendMessage(ChatColor.GRAY+"That player is not online for you to enthrall!");
+						}
+					}
+				}
+			}
+			else{
+				sender.sendMessage("Unknown command. Type "+ '"' +"help"+'"'+" for help.");
+			}
+		}
 		if ((cmd.equalsIgnoreCase("infect"))||(string.equalsIgnoreCase("inf"))||(string.equalsIgnoreCase("infection"))||
 		(string.equalsIgnoreCase("infections"))){
 			if (args.length == 0) {
@@ -40,12 +171,6 @@ class Commands implements CommandExecutor, Listener{
 					sender.sendMessage(ChatColor.DARK_PURPLE + "or, '"+ChatColor.LIGHT_PURPLE+"infect help angeltoxicoma/vampire/werewolf/avatar"
 					        +ChatColor.DARK_PURPLE+"'");
 				}
-				else if(args[0].equalsIgnoreCase("enthrall")){
-					sender.sendMessage("");
-					sender.sendMessage(ChatColor.GRAY + "Be careful about this. You can only have one thrall at a time.");
-					sender.sendMessage(ChatColor.GRAY + "Usage is '"+ChatColor.LIGHT_PURPLE+"/infect enthrall <player>"+ChatColor.GRAY+"'.");
-					sender.sendMessage("");
-				}
 			}
 			else if (args.length == 2) {
 				if(args[0].equalsIgnoreCase("admin")){
@@ -56,13 +181,6 @@ class Commands implements CommandExecutor, Listener{
 					else{
 						sender.sendMessage("Unknown command. Type "+ '"' +"help"+'"'+" for help.");
 					}
-				}
-				else if(args[0].equalsIgnoreCase("enthrall")){
-					sender.sendMessage("");
-					sender.sendMessage(ChatColor.GRAY +"Are you sure you want to make " + args[1] + " your thrall?");
-					sender.sendMessage(ChatColor.RED + "If they complain, staff will undo it. You will lose your chance.");
-					sender.sendMessage(ChatColor.GRAY + "To confirm, type '"+ChatColor.LIGHT_PURPLE+"/infect enthrall "+args[1]+" confirm"+ChatColor.GRAY+"'");
-					sender.sendMessage("");
 				}
 			}
 			else if (args.length == 3) {
@@ -90,44 +208,35 @@ class Commands implements CommandExecutor, Listener{
 						}
 					}
 				}
-				else if(args[0].equalsIgnoreCase("enthrall")){
-					if(args[2].equalsIgnoreCase("confirm")){
-						sender.sendMessage("");
-						sender.sendMessage(ChatColor.RED+ args[1] + " "+ChatColor.GRAY+"is now enthralled to you.");
-						sender.sendMessage("");
+			}
+			else if (args.length == 4) {
+				if(args[0].equalsIgnoreCase("admin")){
+					if(sender.isOp()){
+						if(args[1].equalsIgnoreCase("vampire")){
+							if(args[2].equalsIgnoreCase("grant")){
+								for(Player p : Bukkit.getOnlinePlayers()){
+									if(args[3].equalsIgnoreCase(p.getName())){
+										p.sendMessage("");
+										p.sendMessage(ChatColor.RED+sender.getName()+ChatColor.GRAY+" appears and deftly slices your throat.");
+										p.sendMessage(ChatColor.GRAY+"They force a red liquid down your throat.");
+										p.sendMessage(ChatColor.GRAY+"Instantly, your wounds close. You feel strange.");
+										p.sendMessage(ChatColor.GRAY+"You have contracted "+ChatColor.RED+"Porphyria"+ChatColor.GRAY+"!");
+										p.sendMessage(ChatColor.GRAY+"Consult '"+ChatColor.LIGHT_PURPLE+"/help infect"+ChatColor.GRAY+"' for more details.");
+										p.sendMessage("");
+									}
+									else{
+										p.sendMessage("They are not online right now.");
+									}
+								}
+							}
+						}
+					}
+					else{
+						sender.sendMessage("Unknown command. Type "+ '"' +"help"+'"'+" for help.");
 					}
 				}
 			}
         }
-		/*else if (cmd.equalsIgnoreCase("enthrall")){
-			sender.sendMessage("test");
-			Player player = (Player) sender;
-			List<String> vList = Infections.plugin.getConfig().getStringList("vampires");
-			Boolean isVamp = false;
-			for (int i = 0; i < vList.size(); i++) {
-        		String vampire = Infections.VampireList.get(i);
-        		if(player.getName().equalsIgnoreCase(vampire)){
-        			isVamp = true;
-        		}
-			}
-			if(isVamp){
-				if (args.length == 0) {
-					player.sendMessage(ChatColor.GRAY + "Be very careful about this. You can only have one thrall at a time.");
-					player.sendMessage(ChatColor.GRAY + "Usage is '"+ChatColor.RED+"/thrall <player>"+ChatColor.GRAY+"'.");
-				}
-				if (args.length == 1) {
-					player.sendMessage(ChatColor.GRAY +"Are you sure you want to make " + args[1] + " your thrall?");
-					player.sendMessage(ChatColor.RED + "If they complain, staff will simply undo it and you will lose your chance.");
-					player.sendMessage(ChatColor.GRAY + "To confirm, type '"+ChatColor.RED+"/enthrall "+args[1]+" confirm"+ChatColor.GRAY+"'");
-				}
-				if (args.length == 2) {
-					player.sendMessage(ChatColor.GRAY+ args[1] + " is now enthralled to you.");
-				}
-			}
-			else{
-				sender.sendMessage("Unknown command. Type "+ '"' +"help"+'"'+" for help.");
-			}
-		}*/
         return false;
     }
 	

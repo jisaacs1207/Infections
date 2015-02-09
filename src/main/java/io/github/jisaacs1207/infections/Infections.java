@@ -1,5 +1,6 @@
 package io.github.jisaacs1207.infections;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -12,7 +13,9 @@ import org.bukkit.scheduler.BukkitScheduler;
 public final class Infections extends JavaPlugin implements Listener{
 	public static Infections plugin;
 	public static Boolean day = true;
-	public static List<String> VampireList;
+	public static List<String> VampireList=new ArrayList<String>();
+	public static List<String> ThrallList=new ArrayList<String>();
+	public static List<String> UndeadList=new ArrayList<String>();
 	@Override
 	public void onEnable() {
 		plugin = this;
@@ -20,6 +23,8 @@ public final class Infections extends JavaPlugin implements Listener{
 		getLogger().info("Infections now loaded.");
 		registerEvents(this, new Vampires(), new Werewolves(), new Avatars(), new Commands());
 		getCommand("infect").setExecutor(new Commands());
+		getCommand("enthrall").setExecutor(new Commands());
+		getCommand("dethrall").setExecutor(new Commands());
 		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
         scheduler.scheduleSyncRepeatingTask(this, new Runnable() {
             @Override
@@ -36,8 +41,12 @@ public final class Infections extends JavaPlugin implements Listener{
     			}
             }
         }, 0L, 20L);
-        VampireList=Infections.plugin.getConfig().getStringList("vampires");
-        
+		VampireList=Infections.plugin.getConfig().getStringList("vampires");
+        for(String thrall:Infections.plugin.getConfig().getConfigurationSection("thralls").getKeys(false)){
+        	ThrallList.add(thrall);
+        }
+        UndeadList.addAll(ThrallList);
+        UndeadList.addAll(VampireList);
 	}
 
 	@Override
