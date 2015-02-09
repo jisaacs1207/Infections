@@ -234,7 +234,7 @@ public class Vampires implements Listener {
     		}
     	}
     }
-    // Makes sure players can't munch normal munchables.
+    // Makes sure players can't munch normal munchables. Raises the dead when munch on rotten meat.
     @EventHandler
     public void onPlayerEat(PlayerInteractEvent event) {
         Player p = event.getPlayer();

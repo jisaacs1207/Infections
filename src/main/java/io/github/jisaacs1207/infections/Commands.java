@@ -12,7 +12,7 @@ class Commands implements CommandExecutor, Listener{
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmnd, String string, String[] args) {
-		if (string.equalsIgnoreCase("infect")) {
+		if ((string.equalsIgnoreCase("infect"))||(string.equalsIgnoreCase("inf"))||(string.equalsIgnoreCase("infection"))||(string.equalsIgnoreCase("infections"))) {
 			if (args.length == 0) {
 				sender.sendMessage(ChatColor.YELLOW + "Infections by jisaacs1207");
 				sender.sendMessage(ChatColor.YELLOW + "v.1 2/5/2015");
