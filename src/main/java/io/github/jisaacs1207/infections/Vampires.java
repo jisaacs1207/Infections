@@ -105,56 +105,58 @@ public class Vampires implements Listener {
     public void onPlayerSeep(PlayerInteractEvent event) {
         Player p = event.getPlayer();
         if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-        	for (int i = 0; i < Infections.VampireList.size(); i++) {
-        		String vampire = Infections.VampireList.get(i);
-        		if(p.getName().equalsIgnoreCase(vampire)){
-        			if((p.getLocation().getPitch()==90)){
-                		if(p.getItemInHand().getType().equals(Material.AIR)){
-                    		int x = p.getLocation().getBlockX();
-                    		int y = p.getLocation().getBlockY();
-                    		int z = p.getLocation().getBlockZ();
-                    		String w = p.getLocation().getWorld().getName();
-                    		Boolean found = false;
-                    		while(found==false){
-                    			Location blockLoc= new Location(Bukkit.getWorld(w),x,y,z);
-                    			Block block =Infections.plugin.getServer().getWorld(w).getBlockAt(blockLoc);
-                    			if(block.getType().equals(Material.AIR)){
-                    				int y2=y-1;
-                    				int y3=y-2;
-                    				Location blockLoc2=new Location(Bukkit.getWorld(w),x,y2,z);
-                    				Location blockLoc3=new Location(Bukkit.getWorld(w),x,y3,z);
-                    				Location blockLoc4=new Location(Bukkit.getWorld(w),x,y3,z);
-                    				Block block2 =Infections.plugin.getServer().getWorld(w).getBlockAt(blockLoc2);
-                    				Block block3 =Infections.plugin.getServer().getWorld(w).getBlockAt(blockLoc3);
-                    				Block block4 =Infections.plugin.getServer().getWorld(w).getBlockAt(blockLoc4);
-                    				if(block2.getType().equals(Material.AIR)){
-                						if(block3.getType().isSolid()){
-                							if(block4.getType().isSolid()){
-                								if(p.getFoodLevel()>10){
-                									p.setFoodLevel(p.getFoodLevel()-4);
-                									p.playEffect(EntityEffect.WOLF_SMOKE);
-                                                    p.playSound(p.getLocation(), Sound.ENDERDRAGON_WINGS, 10, 15);
-                                					p.teleport(blockLoc);
-                                					found=true;
-                                					p.sendMessage(ChatColor.GRAY+"You've seeped through the ground below you.");
-                								}
-                								else{
-                									found=true;
-                                					p.sendMessage(ChatColor.GRAY+"You're too hungry to do that.");
-                								}
-                							}
-                						}	
-                    				}
-                    			}
-                    			y--;
-                    			if(y<2){
-                    				p.sendMessage(ChatColor.RED+"Can't seep here!");
-                    				found=true;
-                    			}
+        	if(p.isSneaking()){
+        		for (int i = 0; i < Infections.VampireList.size(); i++) {
+            		String vampire = Infections.VampireList.get(i);
+            		if(p.getName().equalsIgnoreCase(vampire)){
+            			if((p.getLocation().getPitch()==90)){
+                    		if(p.getItemInHand().getType().equals(Material.AIR)){
+                        		int x = p.getLocation().getBlockX();
+                        		int y = p.getLocation().getBlockY();
+                        		int z = p.getLocation().getBlockZ();
+                        		String w = p.getLocation().getWorld().getName();
+                        		Boolean found = false;
+                        		while(found==false){
+                        			Location blockLoc= new Location(Bukkit.getWorld(w),x,y,z);
+                        			Block block =Infections.plugin.getServer().getWorld(w).getBlockAt(blockLoc);
+                        			if(block.getType().equals(Material.AIR)){
+                        				int y2=y-1;
+                        				int y3=y-2;
+                        				Location blockLoc2=new Location(Bukkit.getWorld(w),x,y2,z);
+                        				Location blockLoc3=new Location(Bukkit.getWorld(w),x,y3,z);
+                        				Location blockLoc4=new Location(Bukkit.getWorld(w),x,y3,z);
+                        				Block block2 =Infections.plugin.getServer().getWorld(w).getBlockAt(blockLoc2);
+                        				Block block3 =Infections.plugin.getServer().getWorld(w).getBlockAt(blockLoc3);
+                        				Block block4 =Infections.plugin.getServer().getWorld(w).getBlockAt(blockLoc4);
+                        				if(block2.getType().equals(Material.AIR)){
+                    						if(block3.getType().isSolid()){
+                    							if(block4.getType().isSolid()){
+                    								if(p.getFoodLevel()>10){
+                    									p.setFoodLevel(p.getFoodLevel()-4);
+                    									p.playEffect(EntityEffect.WOLF_SMOKE);
+                                                        p.playSound(p.getLocation(), Sound.ENDERDRAGON_WINGS, 10, 15);
+                                    					p.teleport(blockLoc);
+                                    					found=true;
+                                    					p.sendMessage(ChatColor.GRAY+"You've seeped through the ground below you.");
+                    								}
+                    								else{
+                    									found=true;
+                                    					p.sendMessage(ChatColor.GRAY+"You're too hungry to do that.");
+                    								}
+                    							}
+                    						}	
+                        				}
+                        			}
+                        			y--;
+                        			if(y<2){
+                        				p.sendMessage(ChatColor.RED+"Can't seep here!");
+                        				found=true;
+                        			}
+                        		}
                     		}
-                		}
-                	}
-        		}
+                    	}
+            		}
+            	}
         	}
         }
     }
