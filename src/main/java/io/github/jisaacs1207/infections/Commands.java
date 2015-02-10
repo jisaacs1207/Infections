@@ -234,7 +234,7 @@ class Commands implements CommandExecutor, Listener{
 									sender.sendMessage("You've swatted the mosquito.");
 									for(String thrallCheck:Infections.plugin.getConfig().getConfigurationSection("thralls").getKeys(false)){
 										String thraller = Infections.plugin.getConfig().getString("thralls."+thrallCheck);
-										if(thraller.equalsIgnoreCase(sender.getName())){
+										if(thraller.equalsIgnoreCase(args[3].toLowerCase())){
 											thrall = thrallCheck.toLowerCase();
 											hasThrall=true;
 										}

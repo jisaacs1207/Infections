@@ -28,13 +28,11 @@ import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
 
 public class Vampires implements Listener {
 //	String string = Infections.plugin.getConfig().getString("p");
@@ -101,30 +99,7 @@ public class Vampires implements Listener {
 	    	}
 	    }
 	}
-	// Increase jump height at night.
-	@EventHandler
-	public void onJump(PlayerMoveEvent event) {
-		if(!Infections.day){
-			for (int i = 0; i < Infections.UndeadList.size(); i++) {
-				String vampire = Infections.UndeadList.get(i);
-				if(event.getPlayer().getName().equalsIgnoreCase(vampire)){
-					if(event.getPlayer().getFoodLevel()>10){
-						Block block, control;
-						Vector dir = event.getPlayer().getVelocity().setY(1.25);
-						if(event.getTo().getY() > event.getFrom().getY())
-						{
-							block = event.getPlayer().getWorld().getBlockAt(new Location(event.getPlayer().getWorld(), event.getTo().getX(), event.getTo().getY()+2, event.getTo().getZ()));
-							control = event.getPlayer().getWorld().getBlockAt(new Location(event.getPlayer().getWorld(), event.getTo().getX(), event.getTo().getY()-2, event.getTo().getZ()));
-						    if(!(block.getTypeId() != 0 || control.getTypeId() == 0))
-							{
-								event.getPlayer().setVelocity(dir);
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+
 	// Seep when looking straight down and right clicking.
     @EventHandler
     public void onPlayerSeep(PlayerInteractEvent event) {
@@ -459,6 +434,10 @@ public class Vampires implements Listener {
 						p.setWalkSpeed((float).2);
 					}
 				}
+				if(p.hasPotionEffect(PotionEffectType.JUMP)){
+					p.removePotionEffect(PotionEffectType.JUMP);
+				}
+				p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP,600,12));
 			}
 		}
 	}
