@@ -27,7 +27,9 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -333,7 +335,22 @@ public class Vampires implements Listener {
     		}
     	}
     }
-    
+    //Sets player back to normal walking and nightvision on quit.
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent  event){
+		event.getPlayer().setWalkSpeed(.2F);
+		if(event.getPlayer().hasPotionEffect(PotionEffectType.NIGHT_VISION)){
+			event.getPlayer().removePotionEffect(PotionEffectType.NIGHT_VISION);
+		}
+    }
+  //Sets player back to normal walking and nightvision on join.
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent  event){
+    	event.getPlayer().setWalkSpeed(.2F);
+		if(event.getPlayer().hasPotionEffect(PotionEffectType.NIGHT_VISION)){
+			event.getPlayer().removePotionEffect(PotionEffectType.NIGHT_VISION);
+		}
+    }
     //Sets pig and villager kills to zombies. Pigzombies and zombies to skeletons.
     @EventHandler
     public void onKill(EntityDeathEvent event) {

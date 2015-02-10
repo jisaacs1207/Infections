@@ -3,9 +3,5 @@ vampirespawn:
   y: 100
   z: 128
   world: world
-vampires:
-  - kimjongeun
-  - jisaacs1207
-thralls:
-  thrallythrallface: kimjongeun
-  harleyquinn: jisaacs1207
+vampires: {}
+thralls: {}

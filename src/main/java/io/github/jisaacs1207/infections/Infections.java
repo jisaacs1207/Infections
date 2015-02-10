@@ -3,7 +3,6 @@ package io.github.jisaacs1207.infections;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.event.Listener;
@@ -62,7 +61,7 @@ public final class Infections extends JavaPlugin implements Listener{
             Bukkit.getServer().getPluginManager().registerEvents(listener, plugin);
         }
     }
-    
+
     public static int randInt(int min, int max) {
 
         // NOTE: Usually this should be a field rather than a method
