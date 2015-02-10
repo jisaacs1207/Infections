@@ -317,11 +317,17 @@ public class Vampires implements Listener {
 		if(event.getPlayer().hasPotionEffect(PotionEffectType.NIGHT_VISION)){
 			event.getPlayer().removePotionEffect(PotionEffectType.NIGHT_VISION);
 		}
+		if(event.getPlayer().hasPotionEffect(PotionEffectType.NIGHT_VISION)){
+			event.getPlayer().removePotionEffect(PotionEffectType.NIGHT_VISION);
+		}
     }
   //Sets player back to normal walking and nightvision on join.
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent  event){
     	event.getPlayer().setWalkSpeed(.2F);
+		if(event.getPlayer().hasPotionEffect(PotionEffectType.NIGHT_VISION)){
+			event.getPlayer().removePotionEffect(PotionEffectType.NIGHT_VISION);
+		}
 		if(event.getPlayer().hasPotionEffect(PotionEffectType.NIGHT_VISION)){
 			event.getPlayer().removePotionEffect(PotionEffectType.NIGHT_VISION);
 		}

@@ -55,6 +55,12 @@ class Commands implements CommandExecutor, Listener{
 				        for(Player players : Infections.plugin.getServer().getOnlinePlayers()) {
 							if(thrall.equalsIgnoreCase(players.getName())){
 								players.sendMessage(ChatColor.GRAY+"You feel more alive, yet less close to "+sender.getName()+".");
+								if(players.hasPotionEffect(PotionEffectType.NIGHT_VISION)){
+									players.getPlayer().removePotionEffect(PotionEffectType.NIGHT_VISION);
+								}
+								if(players.getPlayer().hasPotionEffect(PotionEffectType.NIGHT_VISION)){
+									players.getPlayer().removePotionEffect(PotionEffectType.NIGHT_VISION);
+								}
 							}
 				        }
 					}
@@ -252,6 +258,12 @@ class Commands implements CommandExecutor, Listener{
 								        for(Player players : Infections.plugin.getServer().getOnlinePlayers()) {
 											if(thrall.equalsIgnoreCase(players.getName())){
 												players.sendMessage(ChatColor.GRAY+"You feel your bond to undeath cease to exist.");
+												if(players.hasPotionEffect(PotionEffectType.JUMP)){
+													players.removePotionEffect(PotionEffectType.JUMP);
+												}
+												if(players.hasPotionEffect(PotionEffectType.NIGHT_VISION)){
+													players.removePotionEffect(PotionEffectType.NIGHT_VISION);
+												}
 											}
 								        }
 									}
@@ -261,6 +273,9 @@ class Commands implements CommandExecutor, Listener{
 											p.setWalkSpeed(.2F);
 											if(p.hasPotionEffect(PotionEffectType.NIGHT_VISION)){
 												p.removePotionEffect(PotionEffectType.NIGHT_VISION);
+											}
+											if(p.hasPotionEffect(PotionEffectType.JUMP)){
+												p.removePotionEffect(PotionEffectType.JUMP);
 											}
 										}
 									}
