@@ -3,7 +3,6 @@ main: io.github.jisaacs1207.infections.Infections
 version: 1.0
 author: jisaacs1207
 website: http://fivekingdoms.net
-softdepend: [Vault]
 description: >
              Fight off or give yourself over to an infection!
 
